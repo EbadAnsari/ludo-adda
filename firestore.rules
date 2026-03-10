@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read: if request.auth.uid == uid;
+      allow write: if request.auth.uid == uid
+        && !('walletBalance' in request.resource.data)
+        && !('isAdmin' in request.resource.data)
+        && !('isBlocked' in request.resource.data);
+    }
+
+    match /battles/{battleId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth.uid == request.resource.data.creatorId;
+      allow update: if request.auth != null && (
+        (request.auth.uid == resource.data.creatorId &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['roomCode','roomCodeSetBy','roomCodeSetAt','roomJoinDeadline','creatorResult','winnerScreenshot'])) ||
+        (request.auth.uid == resource.data.joinerId &&
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['joinerResult','joinerJoined']))
+      );
+    }
+
+    match /transactions/{txnId} {
+      allow read: if request.auth.uid == resource.data.uid;
+      allow write: if false;
+    }
+
+    match /depositRequests/{reqId} {
+      allow read: if request.auth.uid == resource.data.uid;
+      allow create: if request.auth.uid == request.resource.data.uid;
+      allow update: if false;
+    }
+
+    match /withdrawRequests/{reqId} {
+      allow read: if request.auth.uid == resource.data.uid;
+      allow create: if request.auth.uid == request.resource.data.uid;
+      allow update: if false;
+    }
+  }
+}
