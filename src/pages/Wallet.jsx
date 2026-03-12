@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PageWrapper } from "../components/layout/PageWrapper";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
-import { UploadZone } from "../components/ui/UploadZone";
+import AddWallet from "../components/wallet/AddWallet";
 import {
 	createDepositRequest,
 	createWithdrawRequest,
@@ -18,6 +18,10 @@ import { timeAgo } from "../utils/time";
 export default function Wallet() {
 	const { user, profile } = useAuthStore();
 	const { transactions, setTransactions } = useWalletStore();
+
+	/**
+	 * @type {[{"add" | "withdraw" | null}, () => void]}
+	 */
 	const [sheet, setSheet] = useState(null); // 'add' | 'withdraw'
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState("");
@@ -71,7 +75,7 @@ export default function Wallet() {
 
 	const submitWithdraw = async () => {
 		if (!withdrawAmount || !upiId || !upiName) return;
-		if (Number(withdrawAmount) < 100) return;
+		if (Number(withdrawAmount) < 200) return;
 		if (Number(withdrawAmount) > (profile?.walletBalance || 0)) return;
 		setLoading(true);
 		try {
@@ -128,65 +132,7 @@ export default function Wallet() {
 				</div>
 
 				{/* Add Money Sheet */}
-				{sheet === "add" && (
-					<div className="space-y-4 bg-surface p-4 border border-border rounded-[8px]">
-						<div className="flex justify-between items-center">
-							<p className="font-display font-semibold text-text1">
-								Add Money
-							</p>
-							<button
-								onClick={() => setSheet(null)}
-								className="text-text3 text-xs"
-							>
-								Cancel
-							</button>
-						</div>
-						<div className="space-y-1 bg-surface2 p-3 border border-border rounded-[6px]">
-							<p className="font-semibold text-[11px] text-text3 uppercase tracking-widest">
-								Pay via UPI
-							</p>
-							<p className="font-mono text-green text-sm">
-								{import.meta.env.VITE_ADMIN_UPI_ID}
-							</p>
-						</div>
-						{import.meta.env.VITE_ADMIN_UPI_QR_URL && (
-							<img
-								src={import.meta.env.VITE_ADMIN_UPI_QR_URL}
-								alt="QR"
-								className="mx-auto rounded-[6px] w-32 h-32"
-							/>
-						)}
-						<Input
-							label="Amount Paid (₹)"
-							type="number"
-							placeholder="Enter amount"
-							value={addAmount}
-							onChange={(e) => setAddAmount(e.target.value)}
-							inputMode="numeric"
-						/>
-						<Input
-							label="UTR / Transaction ID"
-							placeholder="12-22 digit UTR number"
-							value={utr}
-							onChange={(e) => setUtr(e.target.value)}
-						/>
-						<div>
-							<p className="mb-2 font-semibold text-[11px] text-text3 uppercase tracking-widest">
-								Payment Screenshot
-							</p>
-							<UploadZone onFile={setScreenshot} />
-						</div>
-						<Button
-							variant="primary"
-							className="w-full"
-							disabled={!addAmount || !utr || !screenshot}
-							loading={loading}
-							onClick={submitDeposit}
-						>
-							Submit Request
-						</Button>
-					</div>
-				)}
+				{sheet === "add" && <AddWallet />}
 
 				{/* Withdraw Sheet */}
 				{sheet === "withdraw" && (
@@ -214,7 +160,7 @@ export default function Wallet() {
 							<Input
 								label="Amount (₹)"
 								type="number"
-								placeholder="Min ₹100"
+								placeholder="Min ₹200"
 								value={withdrawAmount}
 								onChange={(e) =>
 									setWithdrawAmount(e.target.value)
@@ -254,7 +200,7 @@ export default function Wallet() {
 							Request Withdrawal
 						</Button>
 						<p className="text-[11px] text-text3 text-center">
-							Minimum ₹100 · Processed within 24 hours
+							Minimum ₹200 · Processed within 24 hours
 						</p>
 					</div>
 				)}
