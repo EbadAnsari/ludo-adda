@@ -1,51 +1,11 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
 import { auth, db } from "./firebase/config";
 import { useAuthStore } from "./store/authStore";
 
 // Pages
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import OTP from "./pages/OTP";
-import Profile from "./pages/Profile";
-import ProfileSetup from "./pages/ProfileSetup";
-import Splash from "./pages/Splash";
-import Wallet from "./pages/Wallet";
-import AdminBattles from "./pages/admin/Battles";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminDeposits from "./pages/admin/Deposits";
-import AdminDisputes from "./pages/admin/Disputes";
-import AdminUsers from "./pages/admin/Users";
-import AdminWithdrawals from "./pages/admin/Withdrawals";
-import BattleRoom from "./pages/battle/BattleRoom";
-import CreateBattle from "./pages/battle/CreateBattle";
-import SubmitResult from "./pages/battle/SubmitResult";
-
-function PrivateRoute({ children }) {
-	// const { user, loading } = useAuthStore();
-	// if (loading)
-	// 	return (
-	// 		<div className="flex justify-center items-center bg-bg min-h-screen">
-	// 			<div className="border-2 border-green border-t-transparent rounded-full w-6 h-6 animate-spin" />
-	// 		</div>
-	// 	);
-	// if (!user) return <Navigate to="/login" replace />;
-	return children;
-}
-
-function AdminRoute({ children }) {
-	const { user, profile, loading } = useAuthStore();
-	if (loading)
-		return (
-			<div className="flex justify-center items-center bg-bg min-h-screen">
-				<div className="border-2 border-green border-t-transparent rounded-full w-6 h-6 animate-spin" />
-			</div>
-		);
-	if (!user || !profile?.isAdmin) return <Navigate to="/home" replace />;
-	return children;
-}
+import Layout from "./layout/Layout";
 
 export default function App() {
 	const { setUser, setProfile, setLoading } = useAuthStore();
@@ -65,109 +25,5 @@ export default function App() {
 		return unsub;
 	}, []);
 
-	return (
-		<Routes>
-			<Route path="/" element={<Splash />} />
-			<Route path="/login" element={<Login />} />
-			<Route path="/otp" element={<OTP />} />
-			<Route path="/setup" element={<ProfileSetup />} />
-			<Route
-				path="/home"
-				element={
-					<PrivateRoute>
-						<Home />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/wallet"
-				element={
-					<PrivateRoute>
-						<Wallet />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/profile"
-				element={
-					<PrivateRoute>
-						<Profile />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/battle/create"
-				element={
-					<PrivateRoute>
-						<CreateBattle />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/battle/:battleId/room"
-				element={
-					<PrivateRoute>
-						<BattleRoom />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/battle/:battleId/result"
-				element={
-					<PrivateRoute>
-						<SubmitResult />
-					</PrivateRoute>
-				}
-			/>
-			<Route
-				path="/admin"
-				element={
-					<AdminRoute>
-						<AdminDashboard />
-					</AdminRoute>
-				}
-			/>
-			<Route
-				path="/admin/deposits"
-				element={
-					<AdminRoute>
-						<AdminDeposits />
-					</AdminRoute>
-				}
-			/>
-			<Route
-				path="/admin/withdrawals"
-				element={
-					<AdminRoute>
-						<AdminWithdrawals />
-					</AdminRoute>
-				}
-			/>
-			<Route
-				path="/admin/disputes"
-				element={
-					<AdminRoute>
-						<AdminDisputes />
-					</AdminRoute>
-				}
-			/>
-			<Route
-				path="/admin/battles"
-				element={
-					<AdminRoute>
-						<AdminBattles />
-					</AdminRoute>
-				}
-			/>
-			<Route
-				path="/admin/users"
-				element={
-					<AdminRoute>
-						<AdminUsers />
-					</AdminRoute>
-				}
-			/>
-			<Route path="*" element={<Navigate to="/" replace />} />
-		</Routes>
-	);
+	return <Layout />;
 }
