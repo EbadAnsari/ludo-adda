@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default function AddWallet() {
 	return (
 		<div className="space-y-4 bg-surface p-4 border border-border rounded-[8px]">

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 

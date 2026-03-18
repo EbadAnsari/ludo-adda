@@ -1,23 +1,25 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 // Pages
+// import PrivateRoute from "../routes/PrivateRoute";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import OTP from "../pages/OTP";
+import Profile from "../pages/Profile";
+import ProfileSetup from "../pages/ProfileSetup";
+import Splash from "../pages/Splash";
+import Wallet from "../pages/Wallet";
+import AdminBattles from "../pages/admin/Battles";
+import AdminDashboard from "../pages/admin/Dashboard";
+import AdminDeposits from "../pages/admin/Deposits";
+import AdminDisputes from "../pages/admin/Disputes";
+import AdminUsers from "../pages/admin/Users";
+import AdminWithdrawals from "../pages/admin/Withdrawals";
+import BattleRoom from "../pages/battle/BattleRoom";
+import CreateBattle from "../pages/battle/CreateBattle";
+import SubmitResult from "../pages/battle/SubmitResult";
+import AdminRoute from "../routes/AdminRoute";
 import PrivateRoute from "../routes/PrivateRoute";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import OTP from "./pages/OTP";
-import Profile from "./pages/Profile";
-import ProfileSetup from "./pages/ProfileSetup";
-import Splash from "./pages/Splash";
-import Wallet from "./pages/Wallet";
-import AdminBattles from "./pages/admin/Battles";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminDeposits from "./pages/admin/Deposits";
-import AdminDisputes from "./pages/admin/Disputes";
-import AdminUsers from "./pages/admin/Users";
-import AdminWithdrawals from "./pages/admin/Withdrawals";
-import BattleRoom from "./pages/battle/BattleRoom";
-import CreateBattle from "./pages/battle/CreateBattle";
-import SubmitResult from "./pages/battle/SubmitResult";
 
 export default function Layout() {
 	return (

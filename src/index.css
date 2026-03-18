@@ -1,11 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+	/* Colors */
+	--color-bg: #0d0d0d;
+	--color-bg2: #141414;
+
+	--color-surface: #1a1a1a;
+	--color-surface2: #212121;
+	--color-surface3: #272727;
+
+	--color-border: #2a2a2a;
+	--color-border2: #333333;
+
+	--color-green: #1db954;
+	--color-green-d: #17a348;
+	--color-green-dim: rgba(29, 185, 84, 0.08);
+
+	--color-gold: #c9a84c;
+	--color-gold-dim: rgba(201, 168, 76, 0.1);
+
+	--color-red: #ef4444;
+	--color-red-dim: rgba(239, 68, 68, 0.08);
+
+	--color-amber: #f59e0b;
+	--color-blue: #3b82f6;
+
+	--color-text1: #f0f0f0;
+	--color-text2: #a0a0a0;
+	--color-text3: #606060;
+
+	/* Fonts */
+	--font-display: "Sora", sans-serif;
+	--font-mono: "IBM Plex Mono", monospace;
+
+	/* Radius */
+	--radius: 8px;
+}
 
 @layer base {
   * { -webkit-tap-highlight-color: transparent; }
   body {
-    @apply bg-bg text-text1 font-display;
+    background-color: var(--color-bg);
+    color: var(--color-text1);
+    font-family: var(--font-display);
     max-width: 430px;
     margin: 0 auto;
     min-height: 100vh;

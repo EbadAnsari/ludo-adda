@@ -1,4 +1,13 @@
-export function Input({ label, error, prefix, suffix, className = '', ...props }) {
+import { InputHTMLAttributes } from 'react'
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  prefix?: string;
+  suffix?: string;
+}
+
+export function Input({ label, error, prefix, suffix, className = '', ...props }: InputProps) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && <label className="text-[11px] uppercase tracking-widest text-text3 font-semibold">{label}</label>}
