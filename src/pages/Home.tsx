@@ -5,10 +5,10 @@ import BattlesList from "../components/ui/BattlesList";
 import { Button } from "../components/ui/Button";
 import { StatusChip, StatusDot } from "../components/ui/StatusDot";
 import {
-	updateBattle,
 	watchMyBattles,
 	watchOpenBattles,
 } from "../firebase/firestore";
+import { onJoinBattle } from "../firebase/functions";
 import { useAuthStore } from "../store/authStore";
 import { useBattleStore } from "../store/battleStore";
 import { formatAmount } from "../utils/currency";
@@ -46,11 +46,12 @@ export default function Home() {
 		if (!profile || profile.walletBalance < battle.entryFee)
 			return alert("Insufficient balance");
 		setJoiningId(battle.id);
-		await updateBattle(battle.id, {
-			joinerId: user.uid,
-			joinerName: profile.username,
-		});
-		navigate(`/battle/${battle.id}/room`);
+		try {
+			await onJoinBattle({ battleId: battle.id });
+			navigate(`/battle/${battle.id}/room`);
+		} catch (e: any) {
+			alert(e.message || "Failed to join battle");
+		}
 		setJoiningId(null);
 	};
 
@@ -132,7 +133,11 @@ export default function Home() {
 							</Button>
 						</div>
 					) : (
-						<BattlesList />
+						<BattlesList 
+							list={listFilterByPriceMoney} 
+							joiningId={joiningId} 
+							joinBattle={joinBattle} 
+						/>
 					)}
 				</div>
 

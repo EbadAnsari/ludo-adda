@@ -6,7 +6,7 @@ import { watchPendingDeposits } from '../../firebase/firestore'
 import { onDepositApproved, onDepositRejected } from '../../firebase/functions'
 import { formatAmount } from '../../utils/currency'
 import { timeAgo } from '../../utils/time'
-import { Copy, ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 
 export default function AdminDeposits() {
   const [deposits, setDeposits] = useState([])
@@ -51,13 +51,7 @@ export default function AdminDeposits() {
                 <p className="text-text3 text-xs">{timeAgo(dep.createdAt)}</p>
               </div>
             </div>
-            <div className="flex items-center justify-between bg-surface2 rounded-[6px] px-3 py-2">
-              <span className="text-text3 text-xs">UTR</span>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-blue text-sm">{dep.utrNumber}</span>
-                <button onClick={() => navigator.clipboard.writeText(dep.utrNumber)} className="text-text3 hover:text-text1 transition-colors"><Copy size={12} /></button>
-              </div>
-            </div>
+
             {dep.screenshotUrl && (
               <img src={dep.screenshotUrl} alt="proof" onClick={() => setPreview(dep.screenshotUrl)} className="w-16 h-16 object-cover rounded-[6px] cursor-pointer border border-border hover:border-border2 transition-colors" />
             )}

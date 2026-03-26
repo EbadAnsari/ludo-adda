@@ -1,13 +1,17 @@
 import { Battle } from "../../interface/Battle";
+import { Button } from "./Button";
+import { formatAmount } from "../../utils/currency";
 
 export interface BattlesListProps {
 	list: Battle[];
+	joiningId: string | null;
+	joinBattle: (battle: Battle) => void;
 }
 
-export default function BattlesList({ list }: Readonly<BattlesListProps>) {
+export default function BattlesList({ list, joiningId, joinBattle }: Readonly<BattlesListProps>) {
 	return (
 		<div className="space-y-2">
-			{filtered.map((battle) => (
+			{list.map((battle) => (
 				<div
 					key={battle.id}
 					className="bg-surface border-l-2 border-l-green border border-border rounded-[8px] p-3 flex items-center justify-between"

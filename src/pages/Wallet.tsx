@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { PageWrapper } from "../components/layout/PageWrapper";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
-import AddWallet from "../components/wallet/AddWallet";
 import {
 	createDepositRequest,
 	createWithdrawRequest,
@@ -12,6 +11,7 @@ import {
 import { uploadScreenshot } from "../firebase/storage";
 import { useAuthStore } from "../store/authStore";
 import { useWalletStore } from "../store/walletStore";
+import { UploadZone } from "../components/ui/UploadZone";
 import { formatAmount } from "../utils/currency";
 import { timeAgo } from "../utils/time";
 
@@ -28,7 +28,6 @@ export default function Wallet() {
 
 	// Add money state
 	const [addAmount, setAddAmount] = useState("");
-	const [utr, setUtr] = useState("");
 	const [screenshot, setScreenshot] = useState(null);
 
 	// Withdraw state
@@ -44,7 +43,8 @@ export default function Wallet() {
 	}, [user?.uid]);
 
 	const submitDeposit = async () => {
-		if (!addAmount || !utr || !screenshot) return;
+		if (!addAmount || !screenshot) return;
+		if (Number(addAmount) < 50) return alert("Minimum deposit is ₹50");
 		setLoading(true);
 		try {
 			const url = await uploadScreenshot(
@@ -57,7 +57,6 @@ export default function Wallet() {
 				username: profile.username,
 				phone: profile.phone,
 				amount: Number(addAmount),
-				utrNumber: utr,
 				screenshotUrl: url,
 				status: "pending",
 				adminNote: null,
@@ -132,7 +131,59 @@ export default function Wallet() {
 				</div>
 
 				{/* Add Money Sheet */}
-				{sheet === "add" && <AddWallet />}
+				{sheet === "add" && (
+					<div className="space-y-4 bg-surface p-4 border border-border rounded-[8px]">
+						<div className="flex justify-between items-center">
+							<p className="font-display font-semibold text-text1">
+								Add Money
+							</p>
+							<button
+								onClick={() => setSheet(null)}
+								className="text-text3 text-xs"
+							>
+								Cancel
+							</button>
+						</div>
+						<div className="space-y-1 bg-surface2 p-3 border border-border rounded-[6px]">
+							<p className="font-semibold text-[11px] text-text3 uppercase tracking-widest">
+								Pay via UPI
+							</p>
+							<p className="font-mono text-green text-sm">
+								{import.meta.env.VITE_ADMIN_UPI_ID || "admin@upi"}
+							</p>
+						</div>
+						{import.meta.env.VITE_ADMIN_UPI_QR_URL && (
+							<img
+								src={import.meta.env.VITE_ADMIN_UPI_QR_URL}
+								alt="QR"
+								className="mx-auto rounded-[6px] w-32 h-32 object-cover"
+							/>
+						)}
+						<Input
+							label="Amount Paid (₹)"
+							type="number"
+							placeholder="Min ₹50"
+							value={addAmount}
+							onChange={(e) => setAddAmount(e.target.value)}
+							inputMode="numeric"
+						/>
+						<div>
+							<p className="mb-2 font-semibold text-[11px] text-text3 uppercase tracking-widest">
+								Payment Screenshot
+							</p>
+							<UploadZone onFile={setScreenshot} />
+						</div>
+						<Button
+							variant="primary"
+							className="w-full"
+							disabled={!addAmount || !screenshot || Number(addAmount) < 50}
+							loading={loading}
+							onClick={submitDeposit}
+						>
+							Submit Request
+						</Button>
+					</div>
+				)}
 
 				{/* Withdraw Sheet */}
 				{sheet === "withdraw" && (

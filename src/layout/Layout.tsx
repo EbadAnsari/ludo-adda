@@ -8,6 +8,7 @@ import OTP from "../pages/OTP";
 import Profile from "../pages/Profile";
 import ProfileSetup from "../pages/ProfileSetup";
 import Splash from "../pages/Splash";
+import Blocked from "../pages/Blocked";
 import Wallet from "../pages/Wallet";
 import AdminBattles from "../pages/admin/Battles";
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -28,6 +29,7 @@ export default function Layout() {
 			<Route path="/login" element={<Login />} />
 			<Route path="/otp" element={<OTP />} />
 			<Route path="/setup" element={<ProfileSetup />} />
+			<Route path="/blocked" element={<Blocked />} />
 			<Route
 				path="/home"
 				element={

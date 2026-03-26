@@ -1,9 +1,23 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /screenshots/{allPaths=**} {
+
+    // Battle screenshots: locked to the uid in the path
+    match /screenshots/{battleId}/{file} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.resource.size < 5 * 1024 * 1024;
+      allow write: if request.auth != null
+        && request.auth.uid == file.split('_')[0]  // filename starts with uid_timestamp
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Deposit screenshots: locked to uid folder
+    match /screenshots/deposits/{uid}/{file} {
+      allow read: if request.auth != null
+        && (request.auth.uid == uid || request.auth.token.admin == true);
+      allow write: if request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
     }
   }
 }

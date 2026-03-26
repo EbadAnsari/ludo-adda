@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useEffect, useRef } from "react";
 import { auth, db } from "./firebase/config";
 import { useAuthStore } from "./store/authStore";
 
@@ -8,22 +8,30 @@ import { useAuthStore } from "./store/authStore";
 import Layout from "./layout/Layout";
 
 export default function App() {
-	const { setUser, setProfile, setLoading } = useAuthStore();
+  const { setUser, setProfile, setLoading } = useAuthStore();
+  const unsubProfileRef = useRef<(() => void) | null>(null);
 
-	useEffect(() => {
-		const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-			if (firebaseUser) {
-				setUser(firebaseUser);
-				const snap = await getDoc(doc(db, "users", firebaseUser.uid));
-				if (snap.exists()) setProfile(snap.data());
-			} else {
-				setUser(null);
-				setProfile(null);
-			}
-			setLoading(false);
-		});
-		return unsub;
-	}, []);
+  useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      if (unsubProfileRef.current) unsubProfileRef.current();
 
-	return <Layout />;
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        unsubProfileRef.current = onSnapshot(doc(db, "users", firebaseUser.uid), (snap) => {
+          if (snap.exists()) setProfile(snap.data() as any);
+        });
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      unsubAuth();
+      if (unsubProfileRef.current) unsubProfileRef.current();
+    };
+  }, []);
+
+  return <Layout />;
 }
